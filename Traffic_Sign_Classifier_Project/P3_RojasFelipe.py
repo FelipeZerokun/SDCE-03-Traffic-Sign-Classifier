@@ -45,14 +45,17 @@ X_test, y_test = test['features'], test['labels']
 # bounding box around the sign in the image. **THESE COORDINATES ASSUME THE ORIGINAL IMAGE. 
 # THE PICKLED DATA CONTAINS RESIZED VERSIONS (32 by 32) OF THESE IMAGES**
 
-n_train = X_train.shape[0]
-n_validation = X_valid.shape[0]
-n_test = X_test.shape[0]
+n_train = len(X_train)
+n_validation =len(X_valid)
+n_test = len(X_test)
 image_shape = (X_train.shape[1], X_train.shape[2], X_train.shape[3])
 n_classes = len(set(y_train))
+total_data = n_train + n_validation + n_test
 
 print("Number of training examples =", n_train)
+print("Number of validation examples =", n_validation)
 print("Number of testing examples =", n_test)
+print("Total Number of data examples =", total_data)
 print("Image data shape =", image_shape)
 print("Number of classes =", n_classes)
 
@@ -87,10 +90,10 @@ def LeNet(x):
     # The number of Channels is 3, and the number of outputs or Classes is 43
     mu = 0
     sigma = 0.1
-    dropout = 0.75
+    dropout = 0.5
     
     # Layer 1: Convolutional. Input = 32x32x1. Output = 28x28x6.
-    conv1_W = tf.Variable(tf.truncated_normal(shape=(5, 5, 3, 6), mean = mu, stddev = sigma))
+    conv1_W = tf.Variable(tf.truncated_normal(shape=(5, 5, 1, 6), mean = mu, stddev = sigma))
     conv1_b = tf.Variable(tf.zeros(6))
     conv1   = tf.nn.conv2d(x, conv1_W, strides=[1, 1, 1, 1], padding='VALID') + conv1_b
     
@@ -121,7 +124,7 @@ def LeNet(x):
     
     # TODO: Activation of layer 3
     fc1    = tf.nn.relu(fc1)
-    fc1 = tf.nn.dropout(fc1, rate =(1 - dropout))
+    #fc1 = tf.nn.dropout(fc1, rate =(1 - dropout))
     
     # TODO: Layer 4: Fully Connected. Input = 120. Output = 84.
     fc2_W  = tf.Variable(tf.truncated_normal(shape=(120, 84), mean = mu, stddev = sigma))
@@ -138,31 +141,57 @@ def LeNet(x):
     
     return logits
 
-
 ## With the LeNet Architecture defined, time to get the data ready for it!
 
 ## First, the preprocessing section
 ## Shuffle the data 
 from sklearn.utils import shuffle
+import cv2
 X_train, y_train = shuffle(X_train, y_train)
+
+### I will try to convert the datasets into grayscale images
+### SOLUTION > https://stackoverflow.com/questions/56390917/convert-a-list-of-images-to-grayscale-using-opencv
+
+X_train_grayscale = np.zeros(X_train.shape[:-1])
+X_valid_grayscale = np.zeros(X_valid.shape[:-1])
+X_test_grayscale = np.zeros(X_test.shape[:-1])
+
+for i in range(X_train.shape[0]): 
+    X_train_grayscale[i] = cv2.cvtColor(X_train[i], cv2.COLOR_BGR2GRAY) 
+
+for i in range(X_valid.shape[0]): 
+    X_valid_grayscale[i] = cv2.cvtColor(X_valid[i], cv2.COLOR_BGR2GRAY)     
+
+for i in range(X_test.shape[0]): 
+    X_test_grayscale[i] = cv2.cvtColor(X_test[i], cv2.COLOR_BGR2GRAY) 
+
+### The LeNet algorithm works with arrays of the size: (None, height, width, channel)
+### Since these images are grayscale images, channel = 1. So, I need to expand one dimension for the
+### new grayscale variables
+X_train_grayscale =np.expand_dims(X_train_grayscale, axis=3)
+X_valid_grayscale =np.expand_dims(X_valid_grayscale, axis=3)
+X_test_grayscale =np.expand_dims(X_test_grayscale, axis=3)
+
+plt.imshow(X_train[0])
+plt.imshow(X_train_grayscale[0].squeeze(), cmap = 'gray')
 
 ## I need to Normalize the image data so that the data has mean zero and equal variance
 ## For image data, (pixel - 128)/ 128 is a quick way to approximately normalize 
 ## the data and can be used in this project. 
-X_train_norm = X_train/128 - 1
-X_valid_norm = X_valid/128 - 1
-X_test_norm = X_test/128 - 1
+X_train_norm = X_train_grayscale/128 - 1
+X_valid_norm = X_valid_grayscale/128 - 1
+X_test_norm = X_test_grayscale/128 - 1
 
 #### Here I will be testing the LeNet architecture for Image classification
 import tensorflow as tf
-EPOCHS = 20
-BATCH_SIZE = 256
+EPOCHS = 50
+BATCH_SIZE = 128
 
-x = tf.placeholder(tf.float32, (None, 32, 32, 3))
+x = tf.placeholder(tf.float32, (None, 32, 32, 1))
 y = tf.placeholder(tf.int32, (None))
 one_hot_y = tf.one_hot(y, 43)
 
-rate = 0.0022
+rate = 0.0025
 
 # Best results for each +5 epochs WITHOUT dropout
 # 10 epochs rate = 0.0013 accuracy = 0.89 / 
@@ -212,9 +241,7 @@ def evaluate(X_data, y_data):
         total_accuracy += (accuracy * len(batch_x))
     return total_accuracy / num_examples
 
-
 ####################### Training the Model with SESSION #######################
-
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
     num_examples = len(X_train_norm)
@@ -233,13 +260,13 @@ with tf.Session() as sess:
         print("Validation Accuracy = {:.3f}".format(validation_accuracy))
         print()
         
-    saver.save(sess, './Saved model/lenet')
+    saver.save(sess, './Saved_model/lenet')
     print("Model saved")
     
 ###################### Evaluating the Model with SESSION ######################    
 
 with tf.Session() as sess:
-    saver.restore(sess, tf.train.latest_checkpoint('./Saved model'))
+    saver.restore(sess, tf.train.latest_checkpoint('./Saved_model'))
 
     test_accuracy = evaluate(X_test_norm, y_test)
     print("Test Accuracy = {:.3f}".format(test_accuracy))    
@@ -265,22 +292,24 @@ test_labels = [17, 25, 2, 13, 14]
 for idx, fname in enumerate(images):
     test_image = cv2.imread(fname)
     test_image = cv2.resize(test_image, dsize=(32, 32), interpolation=cv2.INTER_LINEAR)
-    test_image = cv2.cvtColor(test_image, cv2.COLOR_BGR2RGB)
+    test_image = cv2.cvtColor(test_image, cv2.COLOR_BGR2GRAY)
     test_image = test_image/128 - 1
     test_images.append(test_image)
-    
+   
+test_images =np.expand_dims(test_images, axis=3)   
+
+### Checking the images
 for img in range(len(test_images)):
     plt.figure()
-    plt.imshow(test_images[img])
+    plt.imshow(test_images[img].squeeze(), cmap = 'gray')
     print(traffic_signs[test_labels[img]][1])
 
-    
 ### Run the predictions here and use the model to output the prediction for each image.
 ### Make sure to pre-process the images with the same pre-processing pipeline used earlier.
 ### Feel free to use as many code cells as needed.
 
 with tf.Session() as sess:
-    saver.restore(sess, tf.train.latest_checkpoint('./Saved model'))
+    saver.restore(sess, tf.train.latest_checkpoint('./Saved_model'))
 
     test_accuracy = evaluate(test_images, test_labels)
     print("Test Accuracy = {:.3f}".format(test_accuracy))     
