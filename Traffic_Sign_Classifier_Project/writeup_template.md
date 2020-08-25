@@ -15,7 +15,6 @@ The goals / steps of this project are the following:
 * Analyze the softmax probabilities of the new images
 * Summarize the results with a written report
 
-
 [//]: # (Image References)
 
 [image1]: ./Writeup_images/dataset_plot.png "Data Representation"
