@@ -75,24 +75,17 @@ As explained in the class, it is good practice to separate the Training set and 
 
 #### 1. Describe how you preprocessed the image data. What techniques were chosen and why did you choose these techniques? Consider including images showing the output of each preprocessing technique. Pre-processing refers to techniques such as converting to grayscale, normalization, etc. (OPTIONAL: As described in the "Stand Out Suggestions" part of the rubric, if you generated additional data for training, describe why you decided to generate additional data, how you generated the data, and provide example images of the additional data. Then describe the characteristics of the augmented training set like number of images in the set, number of images for each class, etc.)
 
-As a first step, I decided to convert the images to grayscale because ...
-
-Here is an example of a traffic sign image before and after grayscaling.
+Firstly, I plotted the image to see with what I was dealing.
 
 ![alt text][image2]
 
-As a last step, I normalized the image data because ...
-
-I decided to generate additional data because ... 
-
-To add more data to the the data set, I used the following techniques because ... 
-
-Here is an example of an original image and an augmented image:
+Just like stated in the data summary, I have 34799 three channel color images for the training set. I decided to convert these images to grayscale because the objective of the convolution and pooling is to highlight certain features in the images and make it "smaller" and I think working with 1 channel instead of 3 can help the CovNet to identify these features. Here is the image after grayscaling
 
 ![alt text][image3]
 
-The difference between the original data set and the augmented data set is the following ... 
+Like in the class, I normalized the image to ensure a similar data distribution among all the pixels. It was recommended to have a mean of 0, so I normalized the data between -1 and 1. Here is the image
 
+![alt text][image4]
 
 #### 2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
 
@@ -100,28 +93,59 @@ My final model consisted of the following layers:
 
 | Layer         		|     Description	        					| 
 |:---------------------:|:---------------------------------------------:| 
-| Input         		| 32x32x3 RGB image   							| 
-| Convolution 3x3     	| 1x1 stride, same padding, outputs 32x32x64 	|
+| Input         		| 32x32x3 Grayscale image   							| 
+| Convolution 5x5     	| 1x1 stride, same padding, outputs 28x28x6 	|
 | RELU					|												|
-| Max pooling	      	| 2x2 stride,  outputs 16x16x64 				|
-| Convolution 3x3	    | etc.      									|
-| Fully connected		| etc.        									|
-| Softmax				| etc.        									|
-|						|												|
-|						|												|
+| Max pooling	      	| 2x2 stride,  outputs 14x14x6 				|
+| Convolution 5x5	    | 1x1 stride, same padding, outputs 10x10x16		|
+| Max pooling	      	| 2x2 stride,  outputs 5x5x16 				|
+| flatten	| Output = 400        									|
+| Fully Connected		| Output = 120 				|
+|		RELU			|												|
+|			Fully Connected			|						Output = 84						|
+|		RELU		|									|
+|			Fully Connected			|						Output = 43	 (Total number of classes)					|
  
 
 
 #### 3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
 
-To train the model, I used an ....
+To train the model I used the LeNet architecture as described above. 
+My first aproach was to use low epochs and change the learning rate. After that, I added 5 epochs and tried again.
+
+Best results for each +5 epochs 
+10 epochs rate = 0.0013 accuracy = 0.89 / 
+10 epochs rate = 0.0015 accuracy = 0.878 / 
+10 epochs rate = 0.0017 accuracy = 0.902/ 
+10 epochs rate = 0.002 accuracy = 0.916 / 
+10 epochs rate = 0.0022 accuracy = 0.910 / 
+10 epochs rate = 0.0025 accuracy = 0.935 / 0.917
+best accuracy = 0.935
+
+15 epochs rate = 0.0013 accuracy = 0.897 / 
+15 epochs rate = 0.0015 accuracy = 0.912 / 
+15 epochs rate = 0.0017 accuracy = 0.919/ 0.909
+15 epochs rate = 0.002 accuracy = 0.913 / 
+15 epochs rate = 0.0022 accuracy = 0.910 / 
+15 epochs rate = 0.0025 accuracy = 0.91
+best accuracy = 0.919
+
+20 epochs rate = 0.0013 accuracy = 0.893 / 
+20 epochs rate = 0.0015 accuracy = 0.917 / 
+20 epochs rate = 0.0017 accuracy = 0.901/ 0.895
+20 epochs rate = 0.002 accuracy = 0.920 / 0.902
+20 epochs rate = 0.0022 accuracy = 0.92 / 0.92
+20 epochs rate = 0.0025 accuracy = 0.907 / 
+ best accuracy = 0.92
+
+and so on...
 
 #### 4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
 My final model results were:
-* training set accuracy of ?
-* validation set accuracy of ? 
-* test set accuracy of ?
+* training set accuracy of 1
+* validation set accuracy of 0.94 
+* test set accuracy of 0.91
 
 If an iterative approach was chosen:
 * What was the first architecture that was tried and why was it chosen?
