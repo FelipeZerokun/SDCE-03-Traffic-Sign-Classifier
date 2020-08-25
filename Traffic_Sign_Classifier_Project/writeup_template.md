@@ -1,12 +1,11 @@
 # **Traffic Sign Recognition** 
 
 ## Writeup
-
-### You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
-
+## Traffic Sign Recognition Project
+### By Felipe Rojas
 ---
 
-**Build a Traffic Sign Recognition Project**
+
 
 The goals / steps of this project are the following:
 * Load the data set (see below for links to the project data set)
@@ -19,14 +18,21 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./examples/visualization.jpg "Visualization"
-[image2]: ./examples/grayscale.jpg "Grayscaling"
-[image3]: ./examples/random_noise.jpg "Random Noise"
-[image4]: ./examples/placeholder.png "Traffic Sign 1"
-[image5]: ./examples/placeholder.png "Traffic Sign 2"
-[image6]: ./examples/placeholder.png "Traffic Sign 3"
-[image7]: ./examples/placeholder.png "Traffic Sign 4"
-[image8]: ./examples/placeholder.png "Traffic Sign 5"
+[image1]: ./Writeup_images/dataset_plot.png "Data Representation"
+[image2]: ./Writeup_images/image_example.png "Color Image Example"
+[image3]: ./Writeup_images/grayscale_image_example.png "Grayscale Image Example"
+[image4]: ./Writeup_images/normalized_image_example.png "Normalized Image"
+[image5]: ./test_images/test1.png "Traffic Sign 1"
+[image6]: ./test_images/test2.png "Traffic Sign 2"
+[image7]: ./test_images/test3.png "Traffic Sign 3"
+[image8]: ./test_images/test4.png "Traffic Sign 4"
+[image9]: ./test_images/test5.png "Traffic Sign 5"
+[image10]: ./Writeup_images/test1.png "Traffic Sign 1 Normalized"
+[image11]: ./Writeup_images/test2.png "Traffic Sign 2 Normalized"
+[image12]: ./Writeup_images/test3.png "Traffic Sign 3 Normalized"
+[image13]: ./Writeup_images/test4.png "Traffic Sign 4 Normalized"
+[image14]: ./Writeup_images/test5.png "Traffic Sign 5 Normalized"
+
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
@@ -34,26 +40,35 @@ The goals / steps of this project are the following:
 ---
 ### Writeup / README
 
-#### 1. Provide a Writeup / README that includes all the rubric points and how you addressed each one. You can submit your writeup as markdown or pdf. You can use this template as a guide for writing the report. The submission includes the project code.
-
-You're reading it! and here is a link to my [project code](https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project/blob/master/Traffic_Sign_Classifier.ipynb)
-
 ### Data Set Summary & Exploration
 
-#### 1. Provide a basic summary of the data set. In the code, the analysis should be done using python, numpy and/or pandas methods rather than hardcoding results manually.
+#### 1. Summary of the Dataset
 
-I used the pandas library to calculate summary statistics of the traffic
-signs data set:
+The dataset has 4 dimensiones for unique values. Features, labels, sizes and coords. 
+For the training, I am interested in the features (X) and the labels (y). So, I take those dimensiones and assigned them to new variables.
+X_train, y_train, X_valid, y_valid, X_test, y_test.
 
-* The size of training set is ?
-* The size of the validation set is ?
-* The size of test set is ?
-* The shape of a traffic sign image is ?
-* The number of unique classes/labels in the data set is ?
+Both X_train and y_train have the same amount of elements. To know how many I have two ways:
+* First, with the len() method
+* Or with the shape method > X_train.shape[0]
+ The same process for the Validation and Test datasets.
+ 
+ To know the size of each image in the data set, I just need to get the shape of one of the elements in the array.
+ * With the shape method, I can get the shape of the element 0 > X_train[0].shape
+  It is the same for all the datasets
+  
+  Finally, to get the number of unique classes or labels, I used the set method because this returns only one of each item in an array. With one of each item, I just need to count
+  the total number of items
+  The labels are on the y variables. > n_classes = len(set(y_train))
 
-#### 2. Include an exploratory visualization of the dataset.
+* The size of training set is 34799
+* The size of the validation set is 4410
+* The size of test set is 12630
+* The shape of a traffic sign image is (32, 32, 3)
+* The number of unique classes/labels in the data set is 43 
 
-Here is an exploratory visualization of the data set. It is a bar chart showing how the data ...
+#### 2.Exploratory visualization
+As explained in the class, it is good practice to separate the Training set and test set 80/20. Here, I plotted the amount of data on each dataset. 
 
 ![alt text][image1]
 
