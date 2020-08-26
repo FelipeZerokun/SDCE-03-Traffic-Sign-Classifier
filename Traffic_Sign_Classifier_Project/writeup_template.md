@@ -142,6 +142,9 @@ and so on...
 
 #### 4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
+As mentioned before, I was testing different rates and adding +5 epochs to see which gave better results. The more epochs I added, the better the accuracy and the best learning rate was 0.0025.
+Above you can see some of my tries to get the 0.93. I did a lot more of tries than those, but included some here to show my approach.
+
 My final model results were:
 * training set accuracy of 1
 * validation set accuracy of 0.94 
@@ -157,7 +160,7 @@ Here are five German traffic signs that I found on the web:
 ![alt text][image5] ![alt text][image6] ![alt text][image7] 
 ![alt text][image8] ![alt text][image9]
 
-I choose 
+I choose these images because I wanted traffic sign images close to the ones we may find in the streets. ]I think the more difficult images for the algorithm to correctly classify are the second, fourth and fifth. This is because there are other things inside the image that can "confuse" the classification proccess. 
 
 #### 2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
 
@@ -165,11 +168,11 @@ Here are the results of the prediction:
 
 | Image			        |     Prediction	        					| 
 |:---------------------:|:---------------------------------------------:| 
-| Stop Sign      		| Stop sign   									| 
-| U-turn     			| U-turn 										|
-| Yield					| Yield											|
-| 100 km/h	      		| Bumpy Road					 				|
-| Slippery Road			| Slippery Road      							|
+| No entry      		| No passing   									| 
+| Road Work     			| Road Work  										|
+| Speed limit (50km/h)		| Road Work							|
+| Yield	      		| Priority Road					 				|
+| Stop			| No passing for vehicles over 3.5 metric tons	|
 
 
 The model was able to correctly guess 4 of the 5 traffic signs, which gives an accuracy of 80%. This compares favorably to the accuracy on the test set of ...
