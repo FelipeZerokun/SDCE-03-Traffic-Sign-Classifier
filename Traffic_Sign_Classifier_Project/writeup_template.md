@@ -174,25 +174,65 @@ Here are the results of the prediction:
 | Yield	      		| Priority Road					 				|
 | Stop			| No passing for vehicles over 3.5 metric tons	|
 
-
-The model was able to correctly guess 4 of the 5 traffic signs, which gives an accuracy of 80%. This compares favorably to the accuracy on the test set of ...
+The model was able to correctly guess 2 of the 5 traffic signs, which gives an accuracy of 50%. I expected a better accuracy but as I predicted, the model had trouble with the images. Viewing the top 5 probability for each sign, the correct prediction where pretty close
 
 #### 3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
 
-The code for making predictions on my final model is located in the 11th cell of the Ipython notebook.
 
-For the first image, the model is relatively sure that this is a stop sign (probability of 0.6), and the image does contain a stop sign. The top five soft max probabilities were
+For the first image, the No Entry, the model has pretty sure it was the No Passing traffic sign. This is pretty bad, and I can say the model will predict wrong the No entry signs.
+The No entry probability is still in the Top 5, but compared to the first probability it is far.
 
 | Probability         	|     Prediction	        					| 
 |:---------------------:|:---------------------------------------------:| 
-| .60         			| Stop sign   									| 
-| .20     				| U-turn 										|
-| .05					| Yield											|
-| .04	      			| Bumpy Road					 				|
-| .01				    | Slippery Road      							|
+| 20.396048         			| No passing   									| 
+| 11.721661     				| No passing for vehicles over 3.5 metric tons 	|
+| 10.22104					| Ahead only	|
+| 9.639948	      			| Turn right ahead				|
+| 3.1942415				    | No entry	|
 
 
-For the second image ... 
+For the second image, the Road Work, the model correctly predicted this road sign, but it was not like really really sure. So I cannot say that the model will certainly predict this road sign everytime. 
+
+| Probability         	|     Prediction	        					| 
+|:---------------------:|:---------------------------------------------:| 
+| 6.856482       			| Road work   									| 
+| 3.852938     				| Bumpy road 	|
+| 3.0637822				| Dangerous curve to the right	|
+| 0.7296789	      			| Bicycles crossing		|
+| 0.25214455		    | General caution	|
+
+For the third image, the speed limit (50km/h), the model couldn't correctly predict the traffic sign. However, the prediction was not certain. Among the top 5 prediction, there is the Speed limit (50km/h) and also Speed limit (80km/h), which is close, so there are some features that are correctly predicted.
+
+| Probability         	|     Prediction	        					| 
+|:---------------------:|:---------------------------------------------:| 
+| 5.4225535       			| Road work   									| 
+| 3.918419    				| Speed limit (80km/h) 	|
+| 3.8647203			| Wild animals crossing	|
+| 2.0528603      			| Speed limit (50km/h)		|
+| 1.9770452	    | No passing for vehicles over 3.5 metric tons	|
+
+For the fourth image, the Yield sign, the model was incorrect. Again, the model was not certain but this time the correct answer was not among the top 5 predictions.
+
+| Probability         	|     Prediction	        					| 
+|:---------------------:|:---------------------------------------------:| 
+| 4.4828563      			| Priority road 									| 
+| 1.7780874   				| Speed limit (60km/h) 	|
+| 1.5796206			| Speed limit (50km/h)	|
+| 1.504427     			| End of speed limit (80km/h)		|
+| 0.9585714    | Speed limit (100km/h)	|
+
+For the fifth image, the Stop sign, it was pretty sure on totally incorrect signs so the model completely missed the correct features for the Stop Sign. In my opinion, this was the hardest traffic sign to predict, and I did it this way because Stop is a really important sign to correctly predict, but the low accuracy is disappointing. 
+
+| Probability         	|     Prediction	        					| 
+|:---------------------:|:---------------------------------------------:| 
+| 16.038725       			| No passing for vehicles over 3.5 metric tons									| 
+| 11.541281    				| Priority road 	|
+| 8.385678			| Keep right	|
+| 5.7303505      			| Double curve		|
+| 4.5727777	    | Road work)	|
+
+I tried a lot of times to get correct prediction of the images from internet, but at most I got a 60% accuracy (3 out of 5). However, this was not consistent when I run the same block many times. It would vary between 20% and 40% most of the times. 
+Maybe a new approach, or other data pre processing techniques, could improve this accuracy, but here are the best results I could get in the end.
 
 ### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
 #### 1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
