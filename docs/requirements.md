@@ -7,9 +7,19 @@ runs a convolutional neural network to classify cropped traffic-sign images.
 
 ## Scope
 
-- Use the German traffic-sign dataset associated with the original project.
-- Verify the expected 43 classes and the supplied dataset splits.
-- Support training, evaluation, and prediction through a command-line interface.
+- Use an image-based distribution of the German Traffic Sign
+  Recognition Benchmark (GTSRB), with its supplied annotations.
+- Document the exact dataset source, version where available,
+  license, and local file organization.
+- Verify image files, annotations, and the expected 43 classes.
+- Preserve the supplied test set for final evaluation.
+- Create reproducible training and validation splits, keeping
+  related image sequences together where sequence identifiers
+  are available.
+- Implement and document resizing, normalization, and augmentation.
+- Apply random augmentation only to training data.
+- Support training, evaluation, and prediction through a
+  command-line interface.
 - Support CPU execution and optional NVIDIA GPU acceleration.
 
 Traffic-sign detection in full road scenes, lane-finding integration,

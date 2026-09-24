@@ -38,6 +38,9 @@ jobs:
 
       - name: Check types
         run: uv run --no-sync mypy
+      
+      - name: Run tests
+        run: uv run --no-sync pytest
 
       - name: Check command-line entry point
         run: uv run --no-sync traffic-sign-classifier
