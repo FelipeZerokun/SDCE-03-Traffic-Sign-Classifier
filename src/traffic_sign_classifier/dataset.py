@@ -1,9 +1,12 @@
 """Read and validate traffic-sign dataset annotations."""
 
 import csv
+import re
 from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
+
+from PIL import Image
 
 REQUIRED_COLUMNS = frozenset(
     {
@@ -115,3 +118,42 @@ def read_annotations(csv_path: Path) -> list[Annotation]:
         raise ValueError(f"{csv_path}: no annotation records")
 
     return annotations
+
+
+def inspect_image(annotation: Annotation, data_root: Path) -> str:
+    """Check image readability and dimensions, returning its image mode."""
+    image_path = data_root / annotation.image_path
+
+    try:
+        with Image.open(image_path) as image:
+            image.load()
+            actual_size = image.size
+            mode = image.mode
+    except OSError as error:
+        raise ValueError(f"{image_path}: cannot read image") from error
+
+    expected_size = (annotation.width, annotation.height)
+    if actual_size != expected_size:
+        raise ValueError(
+            f"{image_path}: expected size {expected_size}, found {actual_size}"
+        )
+
+    return mode
+
+
+def training_track_key(annotation: Annotation) -> tuple[int, int]:
+    """Extract a class-and-track key from a Kaggle training filename."""
+    match = re.fullmatch(
+        r"([0-9]{5})_([0-9]{5})_([0-9]{5})\.png",
+        annotation.image_path.name,
+    )
+    if match is None:
+        raise ValueError(f"Unexpected training filename: {annotation.image_path.name}")
+
+    filename_class = int(match.group(1))
+    track_id = int(match.group(2))
+
+    if filename_class != annotation.class_id:
+        raise ValueError("Filename class does not match annotation class")
+
+    return annotation.class_id, track_id

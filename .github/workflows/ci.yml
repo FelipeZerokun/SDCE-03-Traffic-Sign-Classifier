@@ -43,7 +43,7 @@ jobs:
         run: uv run --no-sync pytest
 
       - name: Check command-line entry point
-        run: uv run --no-sync traffic-sign-classifier
+        run: uv run --no-sync traffic-sign-classifier --help
 
       - name: Build package
         run: uv build

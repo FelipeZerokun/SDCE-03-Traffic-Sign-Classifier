@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [project.scripts]
-traffic-sign-classifier = "traffic_sign_classifier:main"
+traffic-sign-classifier = "traffic_sign_classifier.cli:main"
 
 [build-system]
 requires = ["uv_build>=0.12.0,<0.13.0"]

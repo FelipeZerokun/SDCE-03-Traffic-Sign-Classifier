@@ -1,10 +1,13 @@
 from pathlib import Path
 
 import pytest
+from PIL import Image
 
 from traffic_sign_classifier.dataset import (
+    inspect_image,
     parse_annotation,
     read_annotations,
+    training_track_key,
     validate_annotation_header,
 )
 
@@ -184,3 +187,93 @@ def test_rejects_mismatched_row_length(
 
     with pytest.raises(ValueError, match="row length does not match"):
         read_annotations(csv_path)
+
+
+@pytest.mark.parametrize("mode", ["RGB", "L"])
+def test_inspects_image(
+    tmp_path: Path,
+    annotation_row: dict[str, str],
+    mode: str,
+) -> None:
+    annotation_row["Path"] = "example.png"
+    annotation = parse_annotation(annotation_row)
+    Image.new(mode, (27, 26)).save(tmp_path / "example.png")
+
+    assert inspect_image(annotation, tmp_path) == mode
+
+
+def test_rejects_missing_image(
+    tmp_path: Path,
+    annotation_row: dict[str, str],
+) -> None:
+    annotation = parse_annotation(annotation_row)
+
+    with pytest.raises(ValueError, match="cannot read image"):
+        inspect_image(annotation, tmp_path)
+
+
+def test_rejects_unreadable_image(
+    tmp_path: Path,
+    annotation_row: dict[str, str],
+) -> None:
+    annotation_row["Path"] = "broken.png"
+    annotation = parse_annotation(annotation_row)
+    (tmp_path / "broken.png").write_bytes(b"not an image")
+
+    with pytest.raises(ValueError, match="cannot read image"):
+        inspect_image(annotation, tmp_path)
+
+
+def test_rejects_image_size_mismatch(
+    tmp_path: Path,
+    annotation_row: dict[str, str],
+) -> None:
+    annotation_row["Path"] = "example.png"
+    annotation = parse_annotation(annotation_row)
+    Image.new("RGB", (10, 10)).save(tmp_path / "example.png")
+
+    with pytest.raises(ValueError, match="expected size"):
+        inspect_image(annotation, tmp_path)
+
+
+@pytest.mark.parametrize("frame", ["00000", "00001", "00029"])
+def test_frames_share_track_key(
+    annotation_row: dict[str, str],
+    frame: str,
+) -> None:
+    annotation_row["Path"] = f"Train/20/00020_00007_{frame}.png"
+    annotation = parse_annotation(annotation_row)
+
+    assert training_track_key(annotation) == (20, 7)
+
+
+@pytest.mark.parametrize("class_id", [20, 21])
+def test_track_key_includes_class(
+    annotation_row: dict[str, str],
+    class_id: int,
+) -> None:
+    annotation_row["ClassId"] = str(class_id)
+    annotation_row["Path"] = f"Train/{class_id}/{class_id:05d}_00007_00000.png"
+    annotation = parse_annotation(annotation_row)
+
+    assert training_track_key(annotation) == (class_id, 7)
+
+
+def test_rejects_unexpected_training_filename(
+    annotation_row: dict[str, str],
+) -> None:
+    annotation_row["Path"] = "Train/20/example.png"
+    annotation = parse_annotation(annotation_row)
+
+    with pytest.raises(ValueError, match="Unexpected training filename"):
+        training_track_key(annotation)
+
+
+def test_rejects_filename_class_mismatch(
+    annotation_row: dict[str, str],
+) -> None:
+    annotation_row["Path"] = "Train/21/00021_00007_00000.png"
+    annotation = parse_annotation(annotation_row)
+
+    with pytest.raises(ValueError, match="Filename class does not match"):
+        training_track_key(annotation)

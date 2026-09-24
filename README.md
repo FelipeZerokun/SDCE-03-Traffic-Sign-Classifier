@@ -47,3 +47,7 @@ https://github.com/FelipeZerokun/SDCE-03-Traffic-Sign-Classifier
 
 The local legacy/ directory is an ignored reference copy.
 Datasets belong in data/ and generated results in outputs/.
+
+## Audit the training dataset
+
+    uv run traffic-sign-classifier audit --config configs/dataset.toml
