@@ -1,0 +1,28 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Dataset and legacy code
+data/
+legacy/
+
+# Development tool caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Coverage reports
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Generated experiment results and model checkpoints
+/outputs/
