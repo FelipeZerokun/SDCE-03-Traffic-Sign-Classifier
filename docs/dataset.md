@@ -30,8 +30,7 @@ The Udacity pickle files are not used by the new pipeline.
 - Train.csv contains 39,209 records.
 - Test.csv contains 12,630 records.
 - Training annotations contain 43 distinct class IDs.
-- CSV columns include image paths, dimensions, bounding boxes,
-  and class IDs.
+- CSV columns include image paths, dimensions, bounding boxes,vand class IDs.
 - Image existence, readability, and annotation consistency
   have not yet been audited.
 
@@ -93,3 +92,33 @@ The supplied test set was not used to create this split.
 
 Image-content duplication across different filenames has not yet
 been checked.
+
+## Baseline preprocessing
+
+- Retain RGB color channels and the full image.
+- Resize directly to 32 × 32 pixels using bilinear interpolation.
+- Direct resizing may change the original aspect ratio.
+- Convert to a float32 tensor with shape [3, 32, 32].
+- Scale pixel values from [0, 255] to [0, 1].
+- Use the same deterministic preprocessing for training, validation, and prediction.
+- Do not apply augmentation in the initial baseline.
+## Dataset preparation completion
+
+Training and validation data can now be loaded as model-ready batches:
+
+- Image tensors: float32, shape [batch_size, 3, 32, 32].
+- Pixel values: [0, 1].
+- Labels: int64, shape [batch_size].
+- Training order is shuffled; validation order is fixed.
+- Partial final batches are retained.
+
+Real-batch smoke checks passed for both splits.
+
+An exact duplicate audit checked all 39,209 training-source images using original dimensions and decoded RGB pixels. It found no duplicate groups.
+
+Limitations:
+- Near-duplicate content was not independently measured.
+- Some classes have only one validation track.
+- Bounding-box validation is deferred because preprocessing uses full images.
+- The supplied test set has not yet undergone the same integrity
+  checks and remains reserved for final evaluation.
