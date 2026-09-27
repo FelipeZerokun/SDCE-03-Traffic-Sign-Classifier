@@ -65,3 +65,26 @@ def test_rejects_out_of_range_index(
 
     with pytest.raises(IndexError):
         dataset[1]
+
+
+def test_augmentation_is_seeded_and_preserves_tensor_contract(
+    tmp_path: Path,
+    annotation: Annotation,
+) -> None:
+    Image.new("RGB", (40, 24), color=(255, 0, 0)).save(tmp_path / "example.png")
+    baseline = TrafficSignDataset([annotation], tmp_path)
+    augmented = TrafficSignDataset([annotation], tmp_path, augment=True)
+    original, label = baseline[0]
+    with torch.random.fork_rng():
+        torch.manual_seed(42)
+        first, first_label = augmented[0]
+        torch.manual_seed(42)
+        repeated, _ = augmented[0]
+    torch.testing.assert_close(first, repeated)
+    torch.testing.assert_close(baseline[0][0], original)
+    assert not torch.equal(first, original)
+    assert first_label == label
+    assert first.shape == original.shape
+    assert first.dtype == torch.float32
+    assert torch.isfinite(first).all()
+    assert 0 <= first.min() <= first.max() <= 1

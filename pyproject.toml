@@ -63,5 +63,5 @@ files = ["src"]
 strict = true
 
 [[tool.mypy.overrides]]
-module = ["torchvision.transforms.functional"]
+module = ["torchvision.transforms", "torchvision.transforms.functional"]
 ignore_missing_imports = true

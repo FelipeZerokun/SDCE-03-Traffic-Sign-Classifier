@@ -47,9 +47,18 @@ def main(argv: list[str] | None = None) -> int:
         help="New manifest path, relative to the current directory.",
     )
 
+    train_parser = commands.add_parser("train", help="Train and save the baseline CNN.")
+    train_parser.add_argument("--config", type=Path, required=True)
+
     args = parser.parse_args(argv)
 
     try:
+        if args.command == "train":
+            from traffic_sign_classifier.training import load_training_config, train
+
+            train(load_training_config(args.config))
+            return 0
+
         config = load_dataset_config(args.config)
 
         if args.command == "split":
