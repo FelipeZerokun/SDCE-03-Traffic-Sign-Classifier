@@ -55,5 +55,8 @@ vehicle control, and C++ deployment are outside the initial scope.
 Use validation results to select models and tune settings.
 Reserve the test set for final evaluation after those decisions.
 
-Set a numerical performance target after verifying the dataset,
-reviewing the course rubric, and measuring a baseline.
+The original course notebook requires 93% validation accuracy. On 2026-09-28,
+the project owner chose to close this engineering rebuild with the existing
+91.26% augmented model, documenting the unmet course target and deferring
+improvement. Full original-course submission compliance is not claimed.
+See [final report](final-report.md) for model selection and completion evidence.

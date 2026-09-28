@@ -104,21 +104,21 @@ Fixed-checkpoint training metrics differ from logged epoch training metrics:
 the latter aggregate predictions while weights change during the epoch.
 
 Training-set metrics are diagnostic and are not estimates of unseen accuracy.
-The test set remains untouched. No architecture or training hyperparameters
-were changed during this analysis.
+The test set was untouched during this baseline analysis. See the
+[final report](final-report.md) for the subsequent test evaluation.
+No architecture or training hyperparameters were changed during this analysis.
 
 ## Follow-up experiment
 
 The training-only position and scale augmentation experiment is implemented
 and documented in [augmentation-v1.md](augmentation-v1.md). It tests a hypothesis
-for improving generalization. Keep the split, architecture, seed, and other
-training settings fixed, and use a separate output directory. Keep validation
-preprocessing deterministic. Record the exact augmentation settings before
-running the experiment.
+for improving generalization. The completed experiment kept the split,
+architecture, seed, and other training settings fixed, used a separate output
+directory, and retained deterministic validation preprocessing.
 
-Compare validation accuracy and macro F1, with class-27 recall as a secondary
-diagnostic. An improvement on this single split and seed would be preliminary;
-do not tune solely to the two class-27 validation tracks.
+The comparison used validation accuracy and macro F1, with class-27 recall as a
+secondary diagnostic. Improvements on this single split and seed are preliminary;
+the two class-27 validation tracks alone are insufficient for model selection.
 
 ## Artifacts
 

@@ -7,10 +7,11 @@ This is a hypothesis, not an established explanation for baseline errors.
 The baseline achieved 90.84% validation accuracy, macro F1 0.864, and
 class-27 recall 21.7%, compared with 100% class-27 training recall.
 
-Use the same split, architecture, seed 42, Adam learning rate 0.001,
-batch size 128, and ten epochs. Start from fresh weights. Select the
-checkpoint by highest validation accuracy, with the first epoch winning ties.
-The test set remains reserved for final evaluation.
+The experiment used the same split, architecture, seed 42, Adam learning rate
+0.001, batch size 128, and ten epochs, starting from fresh weights. The checkpoint
+was selected by highest validation accuracy, with the first epoch winning ties.
+During this experiment, the test set was reserved for final evaluation. See
+the [final report](final-report.md) for the subsequent evaluation.
 
 ## Transformation
 
@@ -67,7 +68,7 @@ A single split and seed provide preliminary evidence only. These results do
 not isolate whether translation, scaling, interpolation, or border changes
 contributed to the gain. The best result occurred at the epoch budget limit;
 convergence has not been established. No further tuning or test evaluation
-was performed.
+was performed as part of this experiment.
 
 Augmented training metrics are measured on changing transformed inputs;
 the table uses fixed-checkpoint, unaugmented training evaluation. The
@@ -83,8 +84,8 @@ training–validation accuracy gap remains about 8.06 percentage points.
   class_27_tracks.png were generated using the selected checkpoint.
 - The baseline checkpoint and reports were preserved; the test set was unused.
 
-## Remaining project work
+## Project completion
 
-This completes the first augmentation experiment. Dedicated evaluation and
-prediction CLI commands, final test-set integrity checks and evaluation after
-model selection, and the final project report remain to be implemented.
+The first augmentation experiment is complete. Evaluation and prediction CLI
+commands, final test integrity checks and evaluation, and the final report were
+completed in the [final milestone](final-report.md). Further training is deferred.

@@ -1,6 +1,7 @@
 """Command-line interface for the traffic-sign classifier."""
 
 import argparse
+import json
 import sys
 from collections import Counter
 from pathlib import Path
@@ -50,9 +51,55 @@ def main(argv: list[str] | None = None) -> int:
     train_parser = commands.add_parser("train", help="Train and save the baseline CNN.")
     train_parser.add_argument("--config", type=Path, required=True)
 
+    evaluate_parser = commands.add_parser("evaluate", help="Evaluate a saved model.")
+    evaluate_parser.add_argument("--checkpoint", type=Path, required=True)
+    evaluate_parser.add_argument("--config", type=Path, required=True)
+    evaluate_parser.add_argument("--manifest", type=Path, required=True)
+    evaluate_parser.add_argument(
+        "--split", choices=("validation", "test"), required=True
+    )
+    evaluate_parser.add_argument("--output", type=Path, required=True)
+    evaluate_parser.add_argument("--device", choices=("cpu", "cuda"), default="cpu")
+
+    predict_parser = commands.add_parser(
+        "predict", help="Predict a cropped sign image."
+    )
+    predict_parser.add_argument("--checkpoint", type=Path, required=True)
+    predict_parser.add_argument("--image", type=Path, required=True)
+    predict_parser.add_argument("--top-k", type=int, default=5)
+    predict_parser.add_argument("--device", choices=("cpu", "cuda"), default="cpu")
+
     args = parser.parse_args(argv)
 
     try:
+        if args.command == "predict":
+            from traffic_sign_classifier.inference import load_model, predict
+
+            model, _ = load_model(args.checkpoint, args.device)
+            print(json.dumps(predict(model, args.image, args.top_k), indent=2))
+            return 0
+        if args.command == "evaluate":
+            from traffic_sign_classifier.evaluation import evaluate
+
+            report = evaluate(
+                args.checkpoint,
+                args.config,
+                args.manifest,
+                args.split,
+                args.output,
+                args.device,
+            )
+            print(
+                json.dumps(
+                    {
+                        key: report[key]
+                        for key in ("split", "images", "accuracy", "macro_f1")
+                    },
+                    indent=2,
+                )
+            )
+            print(f"Reports saved: {args.output.resolve()}")
+            return 0
         if args.command == "train":
             from traffic_sign_classifier.training import load_training_config, train
 
