@@ -5,6 +5,10 @@ traffic-sign classification project.
 
 ## Status
 
+The follow-up [Udacity dataset comparison](docs/udacity-comparison.md) repeats
+the baseline and augmentation pipeline on the supplied Udacity split and includes
+learning curves, score comparisons, per-class recall, and prediction examples.
+
 Training, evaluation, and cropped-image prediction commands are implemented.
 The final model is the augmentation-v1 epoch-10 checkpoint, selected using
 91.26% validation accuracy and 0.880 macro F1. Further training is deferred.

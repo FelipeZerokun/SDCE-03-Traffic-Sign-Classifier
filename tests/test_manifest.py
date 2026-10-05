@@ -202,3 +202,27 @@ def test_rejects_invalid_partition(
 
     with pytest.raises(ValueError, match=message):
         load_split_manifest(manifest_path, annotations_path)
+
+
+def test_provided_split_does_not_invent_track_ids(
+    manifest_files: tuple[Path, Path],
+) -> None:
+    manifest_path, annotations_path = manifest_files
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest.update(schema_version=3, split_policy="provided")
+    for name in ("training", "validation"):
+        for record in manifest[name]:
+            del record["track_id"]
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    split = load_split_manifest(manifest_path, annotations_path)
+    assert len(split.training) == 2
+    assert len(split.validation) == 2
+    manifest["validation"].append(manifest["training"][0])
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    with pytest.raises(ValueError, match="share image paths"):
+        load_split_manifest(manifest_path, annotations_path)
+
+
+def test_provided_split_requires_explicit_policy(tmp_path: Path) -> None:
+    with pytest.raises(ValueError, match="provided split policy"):
+        validate_manifest_source({"schema_version": 3}, tmp_path / "Train.csv")

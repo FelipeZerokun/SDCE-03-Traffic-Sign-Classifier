@@ -1,0 +1,9 @@
+[data]
+root = "../data/udacity"
+train_annotations = "Train.csv"
+test_annotations = "Test.csv"
+
+# Required by the generic config reader; the supplied manifest defines the split.
+[split]
+validation_fraction = 0.11247
+seed = 42

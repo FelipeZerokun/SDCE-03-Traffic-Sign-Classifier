@@ -1,0 +1,54 @@
+[
+  {
+    "run": "baseline-v1",
+    "label": "Current / baseline",
+    "epoch": 8,
+    "validation_accuracy": 0.9084291187739464,
+    "validation_macro_f1": 0.864499802612592,
+    "test_accuracy": 0.8889944576405384,
+    "test_macro_f1": 0.8393156860219876,
+    "test_exact_overlap_images": 8,
+    "test_nonoverlapping_accuracy": 0.8889241007764221,
+    "test_nonoverlapping_images": 12622,
+    "test_nonoverlapping_macro_f1": 0.8392977236633193
+  },
+  {
+    "run": "augmentation-v1",
+    "label": "Current / augmented",
+    "epoch": 10,
+    "validation_accuracy": 0.9126436781609195,
+    "validation_macro_f1": 0.8801616149398718,
+    "test_accuracy": 0.9019002375296912,
+    "test_macro_f1": 0.8649502056631436,
+    "test_exact_overlap_images": 8,
+    "test_nonoverlapping_accuracy": 0.9018380605292347,
+    "test_nonoverlapping_images": 12622,
+    "test_nonoverlapping_macro_f1": 0.8649293229713385
+  },
+  {
+    "run": "udacity-baseline-v1",
+    "label": "Udacity / baseline",
+    "epoch": 7,
+    "validation_accuracy": 0.8913832199546485,
+    "validation_macro_f1": 0.8262896215879414,
+    "test_accuracy": 0.8897862232779098,
+    "test_macro_f1": 0.8463444321905406,
+    "test_exact_overlap_images": 0,
+    "test_nonoverlapping_accuracy": 0.8897862232779098,
+    "test_nonoverlapping_images": 12630,
+    "test_nonoverlapping_macro_f1": 0.8463444321905406
+  },
+  {
+    "run": "udacity-augmentation-v1",
+    "label": "Udacity / augmented",
+    "epoch": 10,
+    "validation_accuracy": 0.9104308390022676,
+    "validation_macro_f1": 0.8408712200731449,
+    "test_accuracy": 0.9132224861441014,
+    "test_macro_f1": 0.883140336952172,
+    "test_exact_overlap_images": 0,
+    "test_nonoverlapping_accuracy": 0.9132224861441014,
+    "test_nonoverlapping_images": 12630,
+    "test_nonoverlapping_macro_f1": 0.883140336952172
+  }
+]

@@ -1,0 +1,16 @@
+{
+  "source_sha256": {
+    "train.p": "5c319e00df7f45a18761e65dfd47341779c310798a71ea3f371659cc4a63da44",
+    "valid.p": "7d92b991f95cf3bfcc6e35b88bad506b89e562992c1eb6c1034462a9604b6948",
+    "test.p": "60b6450ffdb227042eb32f28d15fe77f98ad24dd550cc85eb445b8c0e502e470"
+  },
+  "counts": {
+    "training": 34799,
+    "validation": 4410,
+    "test": 12630
+  },
+  "exact_training_validation_duplicate_groups": 0,
+  "track_independence_verified": false,
+  "near_duplicates_checked": false,
+  "conversion": "Lossless RGB PNG; original array order and provided splits preserved"
+}

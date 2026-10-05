@@ -23,7 +23,9 @@ License listed by Kaggle: CC0: Public Domain
 - data/Meta/: reference sign images
 - data/Meta.csv: reference metadata
 
-The Udacity pickle files are not used by the new pipeline.
+The original runs use this distribution. The follow-up
+[Udacity comparison](udacity-comparison.md) adapts the local Udacity pickle files
+losslessly for the same pipeline while preserving their supplied split.
 
 ## Initial observations
 

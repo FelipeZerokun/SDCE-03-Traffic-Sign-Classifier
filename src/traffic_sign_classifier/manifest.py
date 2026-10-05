@@ -19,8 +19,10 @@ def validate_manifest_source(
 ) -> None:
     """Check the manifest version and source annotation fingerprint."""
     version = manifest.get("schema_version")
-    if type(version) is not int or version != 2:
-        raise ValueError("Expected manifest schema version 2")
+    if type(version) is not int or version not in (2, 3):
+        raise ValueError("Expected manifest schema version 2 or 3")
+    if version == 3 and manifest.get("split_policy") != "provided":
+        raise ValueError("Schema version 3 requires the provided split policy")
 
     expected_digest = manifest.get("annotations_sha256")
     if not isinstance(expected_digest, str):
@@ -34,6 +36,8 @@ def validate_manifest_source(
 def resolve_manifest_records(
     records: object,
     annotations_by_path: Mapping[str, Annotation],
+    *,
+    check_tracks: bool = True,
 ) -> tuple[Annotation, ...]:
     """Validate manifest entries and resolve their source annotations."""
     if not isinstance(records, list) or not records:
@@ -63,9 +67,10 @@ def resolve_manifest_records(
         if type(class_id) is not int or class_id != annotation.class_id:
             raise ValueError(f"{path}: manifest class does not match")
 
-        expected_track = training_track_key(annotation)[1]
-        if type(track_id) is not int or track_id != expected_track:
-            raise ValueError(f"{path}: manifest track does not match")
+        if check_tracks:
+            expected_track = training_track_key(annotation)[1]
+            if type(track_id) is not int or track_id != expected_track:
+                raise ValueError(f"{path}: manifest track does not match")
 
         seen_paths.add(path)
         resolved.append(annotation)
@@ -77,7 +82,7 @@ def load_split_manifest(
     manifest_path: Path,
     annotations_path: Path,
 ) -> AnnotationSplit:
-    """Load a complete split with no shared image paths or tracks."""
+    """Load a complete partition; check tracks for track-based v2 manifests."""
     with manifest_path.open(encoding="utf-8") as file:
         manifest = json.load(file)
 
@@ -93,9 +98,12 @@ def load_split_manifest(
     if len(annotations_by_path) != len(annotations):
         raise ValueError("Duplicate image paths in source annotations")
 
-    training = resolve_manifest_records(manifest.get("training"), annotations_by_path)
+    check_tracks = manifest["schema_version"] == 2
+    training = resolve_manifest_records(
+        manifest.get("training"), annotations_by_path, check_tracks=check_tracks
+    )
     validation = resolve_manifest_records(
-        manifest.get("validation"), annotations_by_path
+        manifest.get("validation"), annotations_by_path, check_tracks=check_tracks
     )
 
     training_paths = {item.image_path.as_posix() for item in training}
@@ -107,11 +115,11 @@ def load_split_manifest(
     if training_paths | validation_paths != set(annotations_by_path):
         raise ValueError("Split does not cover all source annotations")
 
-    training_tracks = {training_track_key(item) for item in training}
-    validation_tracks = {training_track_key(item) for item in validation}
-
-    if not training_tracks.isdisjoint(validation_tracks):
-        raise ValueError("Training and validation share tracks")
+    if check_tracks:
+        training_tracks = {training_track_key(item) for item in training}
+        validation_tracks = {training_track_key(item) for item in validation}
+        if not training_tracks.isdisjoint(validation_tracks):
+            raise ValueError("Training and validation share tracks")
 
     expected_classes = {item.class_id for item in annotations}
     if {item.class_id for item in training} != expected_classes or {
